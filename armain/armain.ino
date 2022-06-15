@@ -25,4 +25,7 @@ void loop(void) {
 	test.Start();
 	S10.Start();
     C10.Start();
+
+
+	_printf("Hi");
 }
