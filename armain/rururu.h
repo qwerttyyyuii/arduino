@@ -18,6 +18,8 @@ public:
 	void Kill(void);
 	void Properties(boolean run_t, unsigned char cnt_t, unsigned char maxpro_t, unsigned int ct_t, unsigned int pt_t, unsigned int rst_t, const char* str_t, void (*fp_t)(Process *));
 	~Process(void);	
+protected:
+	
 };
 
 // rururu.ino

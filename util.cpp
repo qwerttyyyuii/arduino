@@ -53,7 +53,7 @@ void Process::Start() {
 }
 
 void Process::Kill(void) {
-	this->run = false;;
+	this->run = false;
 	if(this) free(this);
 }
 
