@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "hancel.serialport-helper",
+        "ms-vscode.vscode-serial-monitor"
+    ]
+}
