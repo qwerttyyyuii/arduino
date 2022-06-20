@@ -33,10 +33,10 @@ void Process::Start() {
 		if (mutex) {
 			mutex = false;
 #ifdef DEBUG
-		if (this->cnt || this->MAX_PROCESS) 
-			_printf("PID: %s-%02d // ", this->name, this->cnt);	
-		else
-			_printf("PID: %s-00 // ", this->name); 								
+			if (this->cnt || this->MAX_PROCESS) 
+				_printf("PID: %s-%02d // ", this->name, this->cnt);	
+			else
+				_printf("PID: %s-00 // ", this->name);
 #endif
 			this->fp(this);
 		}
@@ -53,7 +53,7 @@ void Process::Start() {
 }
 
 void Process::Kill(void) {
-	this->run = false;;
+	this->run = false;
 	if(this) free(this);
 }
 
