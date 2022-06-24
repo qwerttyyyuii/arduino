@@ -7,6 +7,8 @@ extern String list[];
 extern const char *commandstr[], *daysOfTheWeek[];
 extern size_t cmdstr_size, list_size;
 
+void Find_CRLF(char *str, size_t size, unsigned int *crlf);
+
 void dosomething10(Process *p) {	
 	switch(p->cnt) {
 		case 0:
@@ -33,20 +35,46 @@ void InputFunc(Process *p) {
 	if (Serial.available()) {
 		//byte b = Serial.read();
 		//_printf("0x%02X", b);		
-		String Str = Serial.readString();
+		String Str = Serial.readString();		
 		String cl_cut;
-		if (Str.equals("\r\n")) {
-			// 엔터 몇개 들어왔는지 체크해야함
-			int cnt = 0;
-			for (int i = 0; i < cnt; i++)
-				Serial.print(">> \n");
+		
+		char *chararray = (char*)malloc(sizeof(char*) * Str.length());
+		if (chararray == NULL) {
+			_printf("malloc failed\n");
 		}
-		else {	
-			// 여기도 엔터 많이 들어와도 무시하고 하나만 하게
-			cl_cut = Str.substring(0, Str.length() - 2); // CR LF 2바이트 자르기
-			Serial.print(">> " + cl_cut + "\n");
-			Command(cl_cut);
-		}	
+		else {
+			unsigned int crlf[2] = {0,};
+			unsigned int repeat = 0;
+			Str.toCharArray(chararray, Str.length());		
+			Find_CRLF(chararray, Str.length(), crlf); 
+			
+			if ((crlf[0] == 0) && crlf[1]) {				
+				repeat = crlf[1];
+			} 
+			else if (crlf[0] && (crlf[1] == 0)) {
+				repeat = crlf[0];
+			}
+			else if (crlf[0] && crlf[1]) {				
+				repeat = max(crlf[0], crlf[1]);
+			}
+			else if ((crlf[0] == 0) && (crlf[1] == 0)) {
+				repeat = 0;
+			}
+
+			//for (uint32_t i = 0; i < strlen(chararray); i++) 
+			Serial.print("Str: ");
+			Serial.print(Str);
+			Serial.println();
+			_printf("len %d, %d, %d\n", Str.length(), crlf[0], crlf[1]);
+			cl_cut = Str.substring(0, Str.length() - crlf[0] - crlf[1]); // CR LF 2바이트 자르기
+			Serial.print(">> " + cl_cut);
+			
+			//Command(cl_cut);
+
+			for (uint32_t i = 0; i < repeat; i++) 
+				Serial.print(">> \n");
+			free(chararray);
+		}		
 	}
 }
 
@@ -88,4 +116,19 @@ void RTCProcess(Process *p) {
 #if !DEBUG
 	//Serial.println();
 #endif	
+}
+
+void Find_CRLF(char *str, size_t size, unsigned int* crlf) {	
+	size_t i = 0;
+	for (i = 0; i < size; i++) {
+		if (str[i] == '\0') {
+			//_printf("NULL\n");			
+		}
+		if (str[i] == '\n') {
+			crlf[0]++;
+		}
+		if (str[i] == '\r') {
+			crlf[1]++;
+		}		
+	}	
 }

@@ -2,5 +2,5 @@
     "port": "COM4",
     "board": "arduino:avr:uno",
     "programmer": "arduino:avrisp",
-    "sketch": "armain.ino"
+    "sketch": "ProcessTest.ino"
 }
